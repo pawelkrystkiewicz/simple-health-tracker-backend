@@ -1,5 +1,16 @@
 # Simple health tracker backend
 
+## Add ormconfig.json
+```
+{
+   "type": "postgres",
+   "host": "localhost",
+   "port": 5432,
+   "username": "test",
+   "password": "test",
+   "database": "test"
+}
+```
 ## ENV example
 ```
 SENDGRID_API_SECRET = #Not used yet
