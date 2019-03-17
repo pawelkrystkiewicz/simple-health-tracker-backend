@@ -1,10 +1,10 @@
 import { ApolloServer } from 'apollo-server-express';
 import connectRedis from 'connect-redis';
-import cors from 'cors';
+import cors = require('cors')
 import 'dotenv';
 import express from 'express';
 import session from 'express-session';
-import QueryComplexity, { fieldConfigEstimator, simpleEstimator } from 'graphql-query-complexity';
+// import QueryComplexity, { fieldConfigEstimator, simpleEstimator } from 'graphql-query-complexity';
 import Redis from 'ioredis';
 import 'reflect-metadata';
 import { formatArgumentValidationError } from 'type-graphql';
@@ -31,32 +31,34 @@ export const main = async () => {
 		schema,
 		formatError: formatArgumentValidationError as any,
 		context: ({ req, res }) => ({ req, res, redis }),
-		debug: false,
-		validationRules: [
-			QueryComplexity({
-				maximumComplexity: 50,
-				variables: {},
-				estimators: [
-					fieldConfigEstimator(),
-					simpleEstimator({
-						defaultComplexity: 1
-					})
-				]
-			})
-		] as any
+		playground: {
+			settings: {
+				'general.betaUpdates': false,
+				'editor.cursorShape': 'line',
+				'editor.fontSize': 14,
+				'editor.fontFamily':
+					"'Source Code Pro', 'Consolas', 'Inconsolata', 'Droid Sans Mono', 'Monaco', monospace",
+				'editor.theme': 'dark',
+				'editor.reuseHeaders': true,
+				'prettier.printWidth': 80,
+				'request.credentials': 'include',
+				'tracing.hideTracingResponse': true
+			}
+		}
 	});
 
 	const app = express();
-	const corsOptions: cors.CorsOptions = {
-		origin: [String(config.CLIENT_URL)],
-		credentials: true,
-	};
-	app.use(cors(corsOptions));
-
+	const corsOptions:cors.CorsOptions={
+		origin: `${config.CLIENT_URL}`,
+		credentials: true
+	}
+	// app.use(
+	// 	cors(corsOptions)
+	// );
 
 	const RedisStore = connectRedis(session);
 	// const maxAge=Number(config.SESSION_TTL);
-	console.log(config.CLIENT_URL);
+	console.log(JSON.stringify(config.CLIENT_URL));
 
 	app.use(
 		session({
@@ -76,8 +78,8 @@ export const main = async () => {
 		})
 	);
 	const port = Number(config.PORT);
-
-	apolloServer.applyMiddleware({ app });
+	console.log(cors(corsOptions))
+	apolloServer.applyMiddleware({ app, cors: corsOptions });
 
 	app.listen(port, () => {
 		console.log(`Server is ready on http://localhost:${port}/graphql`);
