@@ -52,13 +52,9 @@ export const main = async () => {
 		origin: `${config.CLIENT_URL}`,
 		credentials: true
 	}
-	// app.use(
-	// 	cors(corsOptions)
-	// );
+	
 
 	const RedisStore = connectRedis(session);
-	// const maxAge=Number(config.SESSION_TTL);
-	console.log(JSON.stringify(config.CLIENT_URL));
 
 	app.use(
 		session({
@@ -78,7 +74,6 @@ export const main = async () => {
 		})
 	);
 	const port = Number(config.PORT);
-	console.log(cors(corsOptions))
 	apolloServer.applyMiddleware({ app, cors: corsOptions });
 
 	app.listen(port, () => {

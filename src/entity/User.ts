@@ -1,7 +1,8 @@
 import bcrypt from 'bcryptjs';
-import {Weight} from "./Weight"
+import { Weight } from './Weight';
 import { Field, ID, ObjectType, Root } from 'type-graphql';
 import { BaseEntity, BeforeInsert, Column, Entity, Index, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Circumference } from './Circumference';
 
 @ObjectType()
 @Entity()
@@ -38,10 +39,11 @@ export class User extends BaseEntity {
 	@Column({ type: 'float', nullable: true })
 	height: string;
 
-	// @Field({ nullable: true })
-  	@OneToMany(type => Weight, weight => weight.user)
+	@OneToMany((type) => Weight, (weight) => weight.user)
 	weight: Weight[];
 
+	@OneToMany((type) => Circumference, (circumference) => circumference.user)
+	circumference: Circumference[];
 
 	@BeforeInsert()
 	async hashPassword() {
