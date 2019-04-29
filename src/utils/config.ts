@@ -15,7 +15,7 @@ switch (process.env.NODE_ENV) {
 dotenv.config({
 	path: path
 });
-
+export const PROD = process.env.NODE_ENV==='production'
 export const PORT = process.env.PORT;
 export const SENDGRID_API_SECRET = process.env.SENDGRID_API_SECRET;
 export const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY;

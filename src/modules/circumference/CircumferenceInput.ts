@@ -1,7 +1,7 @@
 import { Min, Max, IsDate } from 'class-validator';
 import { InputType, Field } from 'type-graphql';
 
-import { Circumference } from '../../entity/Circumference';
+import { Circumference } from '../../entity/Transaction';
 
 @InputType()
 export class CircumferenceInput implements Partial<Circumference> {

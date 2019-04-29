@@ -1,7 +1,7 @@
 import { Min, Max, IsDate } from 'class-validator';
 import { InputType, Field } from 'type-graphql';
 
-import { Weight } from '../../entity/Weight';
+import { Weight } from '../../entity/Account';
 
 @InputType()
 export class WeightInput implements Partial<Weight> {

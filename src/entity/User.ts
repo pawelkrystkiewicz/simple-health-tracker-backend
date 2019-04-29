@@ -1,8 +1,23 @@
 import bcrypt from 'bcryptjs';
-import { Weight } from './Weight';
 import { Field, ID, ObjectType, Root } from 'type-graphql';
-import { BaseEntity, BeforeInsert, Column, Entity, Index, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
-import { Circumference } from './Circumference';
+import {
+	BaseEntity,
+	BeforeInsert,
+	Column,
+	Entity,
+	Index,
+	PrimaryGeneratedColumn,
+	OneToMany,
+	CreateDateColumn,
+	UpdateDateColumn
+} from 'typeorm';
+import { Account } from './Account';
+import * as config from '../utils/config';
+
+export enum UserRole {
+	admin = 'admin',
+	user = 'user'
+}
 
 @ObjectType()
 @Entity()
@@ -12,15 +27,15 @@ export class User extends BaseEntity {
 	id: number;
 
 	@Field()
-	@Column()
+	@Column('varchar')
 	firstName: string;
 
 	@Field()
-	@Column()
+	@Column('varchar')
 	lastName: string;
 
 	@Field()
-	fullName(@Root() parent: this): string {
+	name(@Root() parent: this): string {
 		return `${parent.firstName} ${parent.lastName}`;
 	}
 
@@ -32,18 +47,23 @@ export class User extends BaseEntity {
 	@Column({ type: 'varchar' })
 	password: string;
 
-	@Column({ type: 'boolean', default: true })
+	@Column({ type: 'boolean', default: config.PROD })
 	confirmed: boolean;
 
-	@Field({ nullable: true })
-	@Column({ type: 'float', nullable: true })
-	height: string;
+	@Column({ type: 'boolean', default: config.PROD })
+	active: boolean;
 
-	@OneToMany((type) => Weight, (weight) => weight.user)
-	weight: Weight[];
+	@Field((type) => Account)
+	@OneToMany((type) => Account, (Account) => Account.user, { nullable: true })
+	account: Account[];
 
-	@OneToMany((type) => Circumference, (circumference) => circumference.user)
-	circumference: Circumference[];
+	@Field()
+	@CreateDateColumn('timestamp')
+	createdAt: Date;
+
+	@Field()
+	@UpdateDateColumn('timestamp')
+	updatedAt: Date;
 
 	@BeforeInsert()
 	async hashPassword() {

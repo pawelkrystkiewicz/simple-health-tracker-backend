@@ -4,7 +4,7 @@ import { getConnection } from 'typeorm';
 import { User } from '../../entity/User';
 import { IContext } from '../../types/IContext';
 import { CircumferenceInput } from './CircumferenceInput';
-import { Circumference } from '../../entity/Circumference';
+import { Circumference } from '../../entity/Transaction';
 
 @Resolver()
 export class CircumferenceResolver {
