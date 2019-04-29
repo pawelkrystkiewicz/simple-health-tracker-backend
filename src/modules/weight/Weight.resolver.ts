@@ -1,6 +1,6 @@
 import { Resolver, Ctx, Mutation, Arg, Authorized, Query } from 'type-graphql';
 import { AuthenticationError } from 'apollo-server-core';
-import { getConnection } from 'typeorm';
+import { getConnection, getRepository } from 'typeorm';
 import { Weight } from '../../entity/Weight';
 import { User } from '../../entity/User';
 import { IContext } from '../../types/IContext';
@@ -30,6 +30,13 @@ export class WeightResolver {
 		if (!req.session || !req.session.userId) {
 			throw new AuthenticationError('You are not authenticated.');
 		}
-		return await Weight.find({ where: { userId: req.session.userId } });
+		const weight = await getRepository(Weight)
+			.createQueryBuilder('weight')
+			.where("weight.user = :id", { id: req.session.userId })
+			//not weight.userId because here we work with relations and not acutal columns in DB
+			.orderBy('weight.createdAt', 'ASC')
+			.getMany();
+
+		return await weight;
 	}
 }
